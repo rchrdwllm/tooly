@@ -1,0 +1,22 @@
+[
+  {
+    "data": {
+      "prompt": "List files in this directory.",
+      "tools": ["dateTime", "listFiles"]
+    },
+    "target": {
+      "expectedTools": ["listFiles"],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "List files in this directory: ./src",
+      "tools": ["dateTime", "listFiles"]
+    },
+    "target": {
+      "expectedTools": ["listFiles"],
+      "category": "golden"
+    }
+  }
+]
