@@ -1,0 +1,14 @@
+[
+  {
+    "data": {
+      "prompt": "What is the current date and time?",
+      "tools": [
+        "dateTime", "listFiles"
+      ]
+    },
+    "target": {
+      "expectedTools": ["dateTime"],
+      "category": "golden"
+    }
+  }
+]
