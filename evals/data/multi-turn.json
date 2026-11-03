@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "prompt": "List the files in the `/src` directory and read the main entry point",
+      "mockTools": {
+        "listFiles": {
+          "description": "Lists files in a given directory",
+          "inputSchema": {
+            "directoryPath": { "type": "string" }
+          },
+          "output": "index.ts\nApp.tsx\ncomponents/\nutils/"
+        },
+        "readFile": {
+          "description": "Reads the content of a specified file",
+          "inputSchema": {
+            "filePath": { "type": "string" }
+          },
+          "output": "'console.log(\"Hello, World!\");'"
+        }
+      }
+    },
+    "target": {
+      "originalTask": "List the files in the `/src` directory and read the main entry point",
+      "expectedTools": ["listFiles", "readFile"],
+      "category": "golden"
+    }
+  }
+]

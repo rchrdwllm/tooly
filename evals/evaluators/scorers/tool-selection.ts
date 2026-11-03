@@ -1,4 +1,4 @@
-import { EvalTarget, ExecutorOutput } from "../types.js";
+import type { EvalTarget, ExecutorOutput } from "../../types.js";
 
 export const toolSelectionScorer = (
   output: ExecutorOutput,
