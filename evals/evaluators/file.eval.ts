@@ -1,12 +1,12 @@
 import { evaluate } from "@lmnr-ai/lmnr";
 import data from "../data/file-tools.json" with { type: "json" };
-import { executor } from "../executor.js";
+import { singleTurnExecutor } from "../executor.js";
 import { EvalTarget } from "../types.js";
-import { toolSelectionScorer } from "./tool-selection.js";
+import { toolSelectionScorer } from "./scorers/tool-selection.js";
 
 evaluate({
   data: data as any,
-  executor: executor,
+  executor: singleTurnExecutor,
   evaluators: {
     toolSelectionScoring: (output, target?: EvalTarget) => {
       if (!target) {
