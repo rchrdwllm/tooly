@@ -1,7 +1,7 @@
 import z from "zod";
 import { MultiTurnEvalTarget, MultiTurnExecutorOutput } from "../../types.js";
 import { generateText, Output } from "ai";
-import { google } from "@ai-sdk/google";
+import { MODEL } from "../../../src/agent/model.js";
 
 const judgeSchema = z.object({
   score: z.number().min(0).max(10).describe("Score from 0 to 10, where 0 is the worst and 10 is the best"),
@@ -10,7 +10,7 @@ const judgeSchema = z.object({
 
 export const llmJudge = async (output: MultiTurnExecutorOutput, target: MultiTurnEvalTarget): Promise<number> => {
   const { output: object } = await generateText({
-    model: google("gemini-3.5-flash-lite"),
+    model: MODEL,
     output: Output.object({
       schema: judgeSchema,
       name: "evaluation-result",

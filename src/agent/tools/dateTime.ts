@@ -5,6 +5,10 @@ export const dateTime = tool({
   description: "Get the current date and time in ISO format.",
   inputSchema: z.object({}),
   execute: async () => {
-    return new Date().toISOString();
+    try {
+      return new Date().toISOString();
+    } catch (error) {
+      return `Failed to get the current date and time: ${error}`;
+    }
   }
 })

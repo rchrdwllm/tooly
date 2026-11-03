@@ -1,16 +1,14 @@
 import { stepCountIs, streamText } from "ai";
-import { google } from '@ai-sdk/google';
 import { SYSTEM_PROMPT } from "./system/prompt.js";
 import type { Agent } from "./index.js";
 import { tools } from "./tools/index.js";
-
-const MODEL_ID = 'gemini-3.5-flash-lite'
+import { MODEL } from "./model.js";
 
 // `history` already includes the latest user message (see app.tsx), so we
 // pass it as `messages` and don't pass `prompt` separately.
 export const runAgent: Agent = async function* (history) {
   const { stream } = streamText({
-    model: google(MODEL_ID),
+    model: MODEL,
     instructions: SYSTEM_PROMPT,
     // tool entries are UI-only; the model's own tool calls aren't replayed from history
     messages: history.flatMap(({ role, content }) => (role === 'tool' ? [] : [{ role, content }])),
