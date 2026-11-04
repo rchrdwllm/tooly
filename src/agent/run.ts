@@ -39,7 +39,8 @@ export const runAgent: Agent = async function* (history) {
       stopWhen: stepCountIs(5),
       tools: tools as any,
       toolApproval: {
-        deleteFile: 'user-approval'
+        deleteFile: 'user-approval',
+        shell: 'user-approval'
       }
     });
     const pending: Promise<{
