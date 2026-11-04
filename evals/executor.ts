@@ -11,7 +11,7 @@ export const singleTurnExecutor = async (data: EvalData): Promise<ExecutorOutput
     instructions: SYSTEM_PROMPT,
     prompt: data.prompt,
     stopWhen: stepCountIs(5),
-    tools,
+    tools: tools as any,
   });
 
   return {
