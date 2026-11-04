@@ -11,6 +11,7 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit",
+    "generate:logo": "tsx scripts/generate-logo.ts",
     "eval": "bunx lmnr eval"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "deno": "^2.9.6",
     "dotenv": "^18.0.9",
     "ink": "^8.0.0",
+    "ink-picture": "^2.1.0",
     "ink-spinner": "^5.0.0",
     "ink-text-input": "^6.0.0",
     "react": "^19.3.1",

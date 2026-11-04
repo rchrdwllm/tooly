@@ -10,8 +10,8 @@ interface Props {
 
 export function ChatInput({value, disabled, onChange, onSubmit}: Props) {
   return (
-    <Box borderStyle="round" borderColor={disabled ? 'gray' : 'green'} paddingX={1}>
-      <Text color={disabled ? 'gray' : 'green'}>{'> '}</Text>
+    <Box borderStyle="round" borderColor={disabled ? 'gray' : '#FEE786'} paddingX={1}>
+      <Text color={disabled ? 'gray' : '#FEE786'}>{'> '}</Text>
       {disabled ? (
         <Text dimColor>Waiting for agent…</Text>
       ) : (
