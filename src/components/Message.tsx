@@ -3,7 +3,7 @@ import type {ChatMessage} from '../types.js';
 import {ToolCall} from './ToolCall.js';
 
 const STYLE = {
-  user: {label: 'You', color: 'green'},
+  user: {label: 'You', color: '#FEE786'},
   assistant: {label: 'Agent', color: 'magenta'},
 } as const;
 

@@ -113,9 +113,10 @@ export function App({agent = runAgent}: {agent?: Agent}) {
   return (
     <Box flexDirection="column">
       {/* Static renders each finished message once, so history never re-renders. */}
-      <Static items={[{id: -1} as ChatMessage, ...messages]}>
-        {m => (m.id === -1 ? <Header key="header" /> : <Message key={m.id} message={m} />)}
-      </Static>
+      <Static items={messages}>{m => <Message key={m.id} message={m} />}</Static>
+
+      {/* Outside Static: graphical image protocols need the live layout to track position. */}
+      <Header />
 
       {Object.entries(pendingTools).map(([id, tool]) => (
         <ToolCall key={id} tool={tool} />
