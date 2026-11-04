@@ -5,9 +5,10 @@ import { Header } from './components/Header.js';
 import { Message } from './components/Message.js';
 import { ToolCall } from './components/ToolCall.js';
 import { ChatInput } from './components/ChatInput.js';
+import { Approval } from './components/Approval.js';
 import { ContextMeter } from './components/ContextMeter.js';
 import type { Agent } from './agent/index.js';
-import type { ChatMessage, ToolInfo } from './types.js';
+import type { ChatMessage, PendingApproval, ToolInfo } from './types.js';
 import { runAgent } from './agent/run.js';
 import { MODEL_LIMITS } from './agent/compaction/constants.js';
 import 'dotenv/config';
@@ -19,6 +20,7 @@ export function App({agent = runAgent}: {agent?: Agent}) {
   const [streaming, setStreaming] = useState<string | null>(null); // null = idle
   const [pendingTools, setPendingTools] = useState<Record<string, ToolInfo>>({}); // by toolCallId
   const [contextUsed, setContextUsed] = useState<number | null>(null); // last reported input tokens
+  const [approval, setApproval] = useState<PendingApproval | null>(null);
   const nextId = useRef(0);
 
   const busy = streaming !== null;
@@ -43,7 +45,11 @@ export function App({agent = runAgent}: {agent?: Agent}) {
       reply = '';
       setStreaming('');
     };
-    const finishTool = (id: string, status: 'done' | 'error') => {
+    const setToolStatus = (id: string, tool: ToolInfo) => {
+      running.set(id, tool);
+      setPendingTools(prev => ({...prev, [id]: tool}));
+    };
+    const finishTool = (id: string, status: 'done' | 'error' | 'denied') => {
       const tool = running.get(id);
       if (!tool) return;
       running.delete(id);
@@ -65,6 +71,24 @@ export function App({agent = runAgent}: {agent?: Agent}) {
             setPendingTools(prev => ({...prev, [event.id]: tool}));
             break;
           }
+          case 'approval-request': {
+            const tool = running.get(event.id) ?? {name: event.name, input: event.input, status: 'running' as const};
+            setToolStatus(event.id, {...tool, status: 'awaiting-approval'});
+            setApproval({
+              id: event.id,
+              name: event.name,
+              input: event.input,
+              decide: approved => {
+                setApproval(null);
+                event.respond(approved, approved ? undefined : 'User denied this action');
+                // A denied call may never get a tool-result/tool-error, so close it here.
+                // finishTool is a no-op if a later event tries to close it again.
+                if (approved) setToolStatus(event.id, {...tool, status: 'running'});
+                else finishTool(event.id, 'denied');
+              },
+            });
+            break;
+          }
           case 'tool-result':
             finishTool(event.id, 'done');
             break;
@@ -80,6 +104,7 @@ export function App({agent = runAgent}: {agent?: Agent}) {
       reply += `${reply ? '\n' : ''}Error: ${error instanceof Error ? error.message : String(error)}`;
     }
 
+    setApproval(null);
     for (const id of [...running.keys()]) finishTool(id, 'error');
     flushText();
     setStreaming(null);
@@ -95,6 +120,8 @@ export function App({agent = runAgent}: {agent?: Agent}) {
       {Object.entries(pendingTools).map(([id, tool]) => (
         <ToolCall key={id} tool={tool} />
       ))}
+
+      {approval && <Approval approval={approval} />}
 
       {busy &&
         (streaming ? (

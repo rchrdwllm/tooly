@@ -16,6 +16,10 @@ export function ToolCall({tool}: {tool: ToolInfo}) {
         <Text color="yellow">
           <Spinner type="dots" />
         </Text>
+      ) : tool.status === 'awaiting-approval' ? (
+        <Text color="yellow">?</Text>
+      ) : tool.status === 'denied' ? (
+        <Text color="red">⊘</Text>
       ) : (
         <Text color={tool.status === 'done' ? 'green' : 'red'}>{tool.status === 'done' ? '✔' : '✖'}</Text>
       )}

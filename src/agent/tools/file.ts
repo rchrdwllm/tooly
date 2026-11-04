@@ -34,7 +34,7 @@ export const writeFile = tool({
       const dir = path.dirname(filePath);
 
       await fs.mkdir(dir, { recursive: true });
-      await fs.writeFile(dir, content, { encoding: 'utf-8'})
+      await fs.writeFile(filePath, content, { encoding: 'utf-8'})
 
       return `Successfully written to file ${filePath}, ${content.length} characters`
     } catch (error) {
@@ -72,5 +72,5 @@ export const deleteFile = tool({
     } catch (error) {
       return `Failed to delete file ${filePath}: ${error}`
     }
-  }
+  },
 })
