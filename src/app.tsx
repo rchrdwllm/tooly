@@ -5,9 +5,11 @@ import { Header } from './components/Header.js';
 import { Message } from './components/Message.js';
 import { ToolCall } from './components/ToolCall.js';
 import { ChatInput } from './components/ChatInput.js';
+import { ContextMeter } from './components/ContextMeter.js';
 import type { Agent } from './agent/index.js';
 import type { ChatMessage, ToolInfo } from './types.js';
 import { runAgent } from './agent/run.js';
+import { MODEL_LIMITS } from './agent/compaction/constants.js';
 import 'dotenv/config';
 
 export function App({agent = runAgent}: {agent?: Agent}) {
@@ -16,6 +18,7 @@ export function App({agent = runAgent}: {agent?: Agent}) {
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState<string | null>(null); // null = idle
   const [pendingTools, setPendingTools] = useState<Record<string, ToolInfo>>({}); // by toolCallId
+  const [contextUsed, setContextUsed] = useState<number | null>(null); // last reported input tokens
   const nextId = useRef(0);
 
   const busy = streaming !== null;
@@ -68,6 +71,9 @@ export function App({agent = runAgent}: {agent?: Agent}) {
           case 'tool-error':
             finishTool(event.id, 'error');
             break;
+          case 'usage':
+            setContextUsed(event.inputTokens);
+            break;
         }
       }
     } catch (error) {
@@ -103,6 +109,7 @@ export function App({agent = runAgent}: {agent?: Agent}) {
         ))}
 
       <ChatInput value={input} disabled={busy} onChange={setInput} onSubmit={submit} />
+      <ContextMeter used={contextUsed} limit={MODEL_LIMITS.contextWindow} />
     </Box>
   );
 }

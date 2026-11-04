@@ -1,19 +1,42 @@
-import { stepCountIs, streamText } from "ai";
+import { ModelMessage, stepCountIs, streamText } from "ai";
 import { SYSTEM_PROMPT } from "./system/prompt.js";
 import type { Agent } from "./index.js";
 import { tools } from "./tools/index.js";
 import { MODEL } from "./model.js";
+import { MODEL_LIMITS } from "./compaction/constants.js";
+import { estimateTokens, isOverThreshold, messagesToText } from "./compaction/utils.js";
+import { compactConversation } from "./compaction/index.js";
 
 // `history` already includes the latest user message (see app.tsx), so we
 // pass it as `messages` and don't pass `prompt` separately.
 export const runAgent: Agent = async function* (history) {
+  const modelLimits = MODEL_LIMITS;
+  const textMessages = messagesToText(
+    history.flatMap(({ role, content }) =>
+      role === "tool" ? [] : [{ role, content }],
+    ) as ModelMessage[],
+  );
+  const currentTokenCount = estimateTokens(textMessages);
+
+  let messages: ModelMessage[] = history.flatMap(({ role, content }) =>
+    role === "tool" ? [] : [{ role, content }],
+  ) as ModelMessage[];
+
+  if (isOverThreshold(currentTokenCount, modelLimits.contextWindow)) {
+    messages = await compactConversation(
+      history.flatMap(({ role, content }) =>
+        role === "tool" ? [] : [{ role, content }],
+      ) as ModelMessage[],
+    );
+  }
+
   const { stream } = streamText({
     model: MODEL,
     instructions: SYSTEM_PROMPT,
     // tool entries are UI-only; the model's own tool calls aren't replayed from history
-    messages: history.flatMap(({ role, content }) => (role === 'tool' ? [] : [{ role, content }])),
+    messages: messages,
     stopWhen: stepCountIs(5),
-    tools
+    tools: tools as any
   });
 
   for await (const part of stream) {
@@ -29,6 +52,14 @@ export const runAgent: Agent = async function* (history) {
         break;
       case 'tool-error':
         yield { type: 'tool-error', id: part.toolCallId, error: String(part.error) };
+        break;
+      case 'finish-step':
+        // Each step resends the whole context, so the last step's input size is
+        // the current context usage. Fall back to a local estimate if the provider omits it.
+        yield {
+          type: 'usage',
+          inputTokens: part.usage.inputTokens ?? estimateTokens(messagesToText(messages)),
+        };
         break;
     }
   }
