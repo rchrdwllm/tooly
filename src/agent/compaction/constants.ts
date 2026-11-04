@@ -4,4 +4,4 @@ export const MODEL_LIMITS = {
   contextWindow: 128000
 }
 
-export const THRESHOLD = 0.1;
+export const THRESHOLD = 0.8;
