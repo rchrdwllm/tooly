@@ -1,6 +1,6 @@
-import { groq } from "@ai-sdk/groq";
 import { dateTime } from "./dateTime.js";
 import { deleteFile, listFiles, readFile, writeFile } from "./file.js";
+import { webSearch } from "./webSearch.js";
 
 export const tools = {
   dateTime,
@@ -8,5 +8,5 @@ export const tools = {
   writeFile,
   readFile,
   deleteFile,
-  webSearch: groq.tools.browserSearch({})
+  webSearch
 }
