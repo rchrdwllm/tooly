@@ -25,6 +25,7 @@ export const llmJudge = async (output: MultiTurnExecutorOutput, target: MultiTur
     async () => {
       const { output: object } = await generateText({
         model: MODEL,
+        maxRetries: 8,
         output: Output.object({
           schema: judgeSchema,
           name: "evaluation-result",

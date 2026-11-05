@@ -4,15 +4,25 @@ import { tools } from "../src/agent/tools/index.js";
 import { MODEL } from "../src/agent/model.js";
 import type { CompactionEvalData, EvalData, ExecutorOutput, MultiTurnEvalData } from "./types.js";
 import z from "zod";
+
+// Groq free tier is TPM-limited; retry 429s with backoff (SDK honors retry-after)
+const EVAL_MAX_RETRIES = 8;
 import { compactConversation } from "../src/agent/compaction/index.js";
 
+// Single-turn evals only score which tools get picked, so strip `execute`:
+// the call is recorded but nothing runs (no network, no disk writes).
+const toolsWithoutExecute = Object.fromEntries(
+  Object.entries(tools).map(([name, t]) => [name, { ...t, execute: undefined }]),
+) as ToolSet;
+
 export const singleTurnExecutor = async (data: EvalData): Promise<ExecutorOutput> => {
-  const { toolCalls } = await generateText({
+  const { toolCalls, finishReason, text, steps } = await generateText({
     model: MODEL,
     instructions: SYSTEM_PROMPT,
     prompt: data.prompt,
     stopWhen: stepCountIs(5),
-    tools: tools as any,
+    maxRetries: EVAL_MAX_RETRIES,
+    tools: toolsWithoutExecute,
   });
 
   return {
@@ -22,6 +32,11 @@ export const singleTurnExecutor = async (data: EvalData): Promise<ExecutorOutput
     })),
     toolNames: toolCalls.map((call) => call.toolName),
     selectedAny: toolCalls.length > 0,
+    finishReason,
+    text,
+    // Every content part type across steps (e.g. "tool-call", "tool-result", "text"),
+    // so provider-executed tools that don't land in `toolCalls` are still visible
+    contentTypes: steps.flatMap((step) => step.content.map((part) => part.type)),
   }
 };
 
@@ -51,6 +66,7 @@ export const multiTurnExecutor = async (data: MultiTurnEvalData) => {
     instructions: SYSTEM_PROMPT,
     prompt: data.prompt,
     stopWhen: stepCountIs(5),
+    maxRetries: EVAL_MAX_RETRIES,
     tools: buildMockedTools(),
   });
 

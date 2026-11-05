@@ -35,6 +35,7 @@ export type MultiTurnEvalTarget = {
   forbiddenTools?: string[];
   category: "golden" | "secondary" | "negative";
   expectedBehavior?: "refuse" | "ask_confirmation" | "complete";
+  maxToolCalls?: number;
 }
 
 export type CompactionEvalTarget = {
@@ -48,6 +49,10 @@ export type ExecutorOutput = {
   toolCalls: Array<{ toolName: string; args: unknown }>;
   toolNames: string[];
   selectedAny: boolean;
+  // Diagnostics: explain a 0 score (answered from memory vs. call not captured)
+  finishReason: string;
+  text: string;
+  contentTypes: string[];
 }
 
 export type MultiTurnExecutorOutput = {

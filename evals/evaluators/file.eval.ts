@@ -6,6 +6,7 @@ import { toolSelectionScorer } from "./scorers/tool-selection.js";
 import { argsPassedScorer } from "./scorers/args-passed.js";
 
 evaluate({
+  config: { concurrencyLimit: 1 },
   data: data as any,
   executor: singleTurnExecutor,
   evaluators: {

@@ -5,6 +5,7 @@ import { CompactionEvalData } from "../types.js";
 import { factRetention } from "./scorers/fact-retention.js";
 
 evaluate({
+  config: { concurrencyLimit: 1 },
   data: data as any,
   executor: async (data: CompactionEvalData) => {
     return compactionExecutor(data)

@@ -5,6 +5,7 @@ import { EvalTarget } from "../types.js";
 import { toolSelectionScorer } from "./scorers/tool-selection.js";
 
 evaluate({
+  config: { concurrencyLimit: 1 },
   data: data as any,
   executor: singleTurnExecutor,
   evaluators: {

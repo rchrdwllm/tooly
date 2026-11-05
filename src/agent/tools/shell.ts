@@ -3,7 +3,7 @@ import shellJs from 'shelljs';
 import z from 'zod';
 
 export const shell = tool({
-  description: 'Execute shell or terminal commands on the host machine. Use when needed to run commands, scripts, programs, or interact with the operating system.',
+  description: 'Execute shell or terminal commands on the host machine. Use when needed to run commands, scripts, programs, or interact with the operating system. Not to be used for lookups unless the user explicitly asks for it. Be cautious and ensure commands are safe to run.',
   inputSchema: z.object({
     command: z.string().describe("The shell or terminal command to execute.")
   }),

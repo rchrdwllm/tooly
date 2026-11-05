@@ -1,0 +1,202 @@
+[
+  {
+    "data": {
+      "prompt": "What's the latest stable version of Node.js?",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [
+        "webSearch"
+      ],
+      "forbiddenTools": [
+        "dateTime",
+        "shell"
+      ],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "Who won the most recent Formula 1 race?",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [
+        "webSearch"
+      ],
+      "forbiddenTools": [
+        "dateTime",
+        "shell"
+      ],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "What time is it right now?",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [
+        "dateTime"
+      ],
+      "forbiddenTools": [
+        "webSearch",
+        "shell"
+      ],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "What's today's date?",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [
+        "dateTime"
+      ],
+      "forbiddenTools": [
+        "webSearch",
+        "shell"
+      ],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "How many days are left until Christmas?",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [
+        "dateTime"
+      ],
+      "forbiddenTools": [
+        "webSearch"
+      ],
+      "category": "secondary"
+    }
+  },
+  {
+    "data": {
+      "prompt": "What's the capital of France?",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [],
+      "forbiddenTools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "What's 12 times 12?",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [],
+      "forbiddenTools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "Explain what a closure is in JavaScript.",
+      "tools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ]
+    },
+    "target": {
+      "expectedTools": [],
+      "forbiddenTools": [
+        "dateTime",
+        "listFiles",
+        "writeFile",
+        "readFile",
+        "deleteFile",
+        "webSearch",
+        "shell"
+      ],
+      "category": "golden"
+    }
+  }
+]

@@ -7,6 +7,7 @@ export const compactConversation = async (messages: ModelMessage[]) => {
   const textMessages = messagesToText(messages);
   const { text: summary } = await generateText({
     model: MODEL,
+    maxRetries: 8,
     instructions: SUMMARIZER_PROMPT,
     prompt: textMessages
   });

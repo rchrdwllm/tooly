@@ -78,3 +78,30 @@ export const expectedArgsScorer = (
 
   return matches.filter(Boolean).length / matches.length;
 };
+
+
+// Penalizes repeated identical calls and exceeding the target's call budget
+export const efficiencyScorer = (
+  output: MultiTurnExecutorOutput,
+  target: MultiTurnEvalTarget,
+): number => {
+  const total = output.toolCalls.length;
+  if (total === 0) return 1;
+
+  const seen = new Set<string>();
+  let duplicates = 0;
+
+  for (const call of output.toolCalls) {
+    const key = `${call.toolName}:${JSON.stringify(call.args)}`;
+    if (seen.has(key)) duplicates++;
+    seen.add(key);
+  }
+
+  const dupScore = 1 - duplicates / total;
+  const stepScore =
+    target.maxToolCalls === undefined || total <= target.maxToolCalls
+      ? 1
+      : target.maxToolCalls / total;
+
+  return Math.min(dupScore, stepScore);
+};
