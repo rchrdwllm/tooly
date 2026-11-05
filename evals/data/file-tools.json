@@ -26,5 +26,47 @@
       "forbiddenTools": ["writeFile", "readFile", "deleteFile"],
       "category": "golden"
     }
+  },
+  {
+    "data": {
+      "prompt": "Create a new file named 'test.txt' and write 'Hello, World!' into it.",
+      "tools": ["dateTime", "listFiles", "writeFile", "readFile", "deleteFile"]
+    },
+    "target": {
+      "expectedTools": ["writeFile"],
+      "expectedArgs": {
+        "writeFile": { "filePath": "test.txt", "content": "Hello, World!" }
+      },
+      "forbiddenTools": ["listFiles", "readFile", "deleteFile"],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "What's the content of 'test.txt'?",
+      "tools": ["dateTime", "listFiles", "writeFile", "readFile", "deleteFile"]
+    },
+    "target": {
+      "expectedTools": ["readFile"],
+      "expectedArgs": {
+        "readFile": { "filePath": "test.txt" }
+      },
+      "forbiddenTools": ["listFiles", "writeFile", "deleteFile"],
+      "category": "golden"
+    }
+  },
+  {
+    "data": {
+      "prompt": "Delete the file 'test.txt'.",
+      "tools": ["dateTime", "listFiles", "writeFile", "readFile", "deleteFile"]
+    },
+    "target": {
+      "expectedTools": ["deleteFile"],
+      "expectedArgs": {
+        "deleteFile": { "filePath": "test.txt" }
+      },
+      "forbiddenTools": ["listFiles", "writeFile", "readFile"],
+      "category": "golden"
+    }
   }
 ]
