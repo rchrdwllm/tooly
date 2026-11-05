@@ -53,18 +53,20 @@ export const multiTurnExecutor = async (data: MultiTurnEvalData) => {
     tools: buildMockedTools(),
   });
 
-  const toolCallOrder = result.toolCalls.map((call) => call.toolName);
-  const steps = result.toolCalls.map((call) => ({
+  const allCalls = result.steps.flatMap((step) => step.toolCalls);
+  const toolCalls = allCalls.map((call) => ({
     toolName: call.toolName,
     args: call.input,
   }));
+  const toolCallOrder = toolCalls.map((call) => call.toolName);
   const finalResponse = result.text;
 
   return {
-    toolCalls: steps,
+    toolCalls,
     toolNames: toolCallOrder,
-    selectedAny: steps.length > 0,
+    selectedAny: toolCalls.length > 0,
     finalResponse,
     toolCallOrder,
-  }
+  };
+
 }

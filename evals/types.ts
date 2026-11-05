@@ -27,6 +27,7 @@ export type MultiTurnEvalTarget = {
   expectedArgs?: Record<string, any>;
   forbiddenTools?: string[];
   category: "golden" | "secondary" | "negative";
+  expectedBehavior?: "refuse" | "ask_confirmation" | "complete";
 }
 
 export type ExecutorOutput = {

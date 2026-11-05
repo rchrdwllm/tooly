@@ -1,4 +1,9 @@
-import type { EvalTarget, ExecutorOutput } from "../../types.js";
+import type {
+  EvalTarget,
+  ExecutorOutput,
+  MultiTurnEvalTarget,
+  MultiTurnExecutorOutput,
+} from "../../types.js";
 
 export const toolSelectionScorer = (
   output: ExecutorOutput,
@@ -27,4 +32,49 @@ export const toolSelectionScorer = (
   // Simple F1-ish score
   if (precision + recall === 0) return 0;
   return (2 * precision * recall) / (precision + recall);
+};
+
+// for multi-turn evals
+
+// 0 if any forbidden tool was called, 1 otherwise
+export const forbiddenToolsScorer = (
+  output: MultiTurnExecutorOutput,
+  target: MultiTurnEvalTarget,
+): number => {
+  const forbidden = new Set(target.forbiddenTools ?? []);
+  const violated = output.toolCalls.some((call) =>
+    forbidden.has(call.toolName),
+  );
+
+  return violated ? 0 : 1;
+};
+
+// Fraction of expected tools that were called with the expected arguments
+const normalizeArg = (key: string, value: unknown) =>
+  key.toLowerCase().includes("path") && typeof value === "string"
+    ? value.replace(/^\.?\//, "").replace(/\/$/, "")
+    : value;
+
+export const expectedArgsScorer = (
+  output: MultiTurnExecutorOutput,
+  target: MultiTurnEvalTarget,
+): number => {
+  const expected = Object.entries(target.expectedArgs ?? {});
+  if (expected.length === 0) return 1;
+
+  const matches = expected.map(([toolName, expectedArgs]) =>
+    output.toolCalls.some((call) => {
+      const args = (call.args ?? {}) as Record<string, unknown>;
+
+      return (
+        call.toolName === toolName &&
+        Object.entries(expectedArgs).every(
+          ([key, value]) =>
+            normalizeArg(key, args[key]) === normalizeArg(key, value),
+        )
+      );
+    }),
+  );
+
+  return matches.filter(Boolean).length / matches.length;
 };
