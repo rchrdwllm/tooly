@@ -1,4 +1,4 @@
-import { groq } from "@ai-sdk/groq";
+import { google } from "@ai-sdk/google";
 
-// Reads GROQ_API_KEY from the environment.
-export const MODEL = groq("openai/gpt-oss-120b");
+// Reads GOOGLE_GENERATIVE_AI_API_KEY from the environment.
+export const MODEL = google("gemini-3.5-flash-lite");

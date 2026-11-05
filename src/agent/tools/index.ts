@@ -10,5 +10,5 @@ export const tools = {
   readFile,
   deleteFile,
   webSearch,
-  shell
-}
+  shell,
+};

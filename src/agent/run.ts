@@ -36,7 +36,7 @@ export const runAgent: Agent = async function* (history) {
       instructions: SYSTEM_PROMPT,
       // tool entries are UI-only; the model's own tool calls aren't replayed from history
       messages: messages,
-      stopWhen: stepCountIs(5),
+      stopWhen: stepCountIs(7),
       tools: tools as any,
       toolApproval: {
         deleteFile: 'user-approval',

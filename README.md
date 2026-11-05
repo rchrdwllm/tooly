@@ -2,7 +2,7 @@
 
 ![Tooly logo](assets/logo.png)
 
-A terminal chat agent built with [Ink](https://github.com/vadimdemedes/ink) and the [Vercel AI SDK](https://ai-sdk.dev). Tooly talks to a model hosted on Groq (`openai/gpt-oss-120b`) and can call tools to work with your files, run shell commands, and search the web.
+A terminal chat agent built with [Ink](https://github.com/vadimdemedes/ink) and the [Vercel AI SDK](https://ai-sdk.dev). Tooly talks to Google Gemini (`gemini-3.5-flash-lite`) and can call tools to work with your files, run shell commands, and search the web (via [Exa](https://exa.ai)).
 
 ## Features
 
@@ -10,7 +10,7 @@ A terminal chat agent built with [Ink](https://github.com/vadimdemedes/ink) and 
 - Tool calling with live status for each call
 - User approval prompt before destructive actions (`deleteFile`, `shell`)
 - Automatic context compaction when the conversation nears the model's context limit, with a context meter in the UI
-- Evals for tool selection and multi-turn behavior, run with [Laminar](https://www.lmnr.ai)
+- Evals for tool routing, tool arguments, multi-turn behavior, and context compaction, run with [Laminar](https://www.lmnr.ai) (see [Evaluation](#evaluation))
 
 ## Tools
 
@@ -22,12 +22,14 @@ A terminal chat agent built with [Ink](https://github.com/vadimdemedes/ink) and 
 | `writeFile` | Create, update, or overwrite a file | No |
 | `deleteFile` | Delete a file | Yes |
 | `shell` | Run a shell command on the host machine | Yes |
-| `webSearch` | Groq browser search | No |
+| `webSearch` | Web search powered by Exa | No |
 
 ## Requirements
 
 - Node.js 20+ (or Bun)
-- A [Groq API key](https://console.groq.com/keys)
+- A [Google AI Studio API key](https://aistudio.google.com/apikey) for Gemini
+- An [Exa API key](https://dashboard.exa.ai/api-keys) for web search
+- A [Laminar](https://www.lmnr.ai) project API key (only needed to run evals)
 
 ## Setup
 
@@ -38,7 +40,9 @@ npm install
 Create a `.env` file in the project root:
 
 ```bash
-GROQ_API_KEY=your_key_here
+GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
+EXA_API_KEY=your_key_here
+LMNR_PROJECT_API_KEY=your_key_here # evals only
 ```
 
 ## Usage
@@ -64,6 +68,29 @@ The build also exposes a `tooly` binary (`dist/cli.js`) through the `bin` field 
 | `npm run typecheck` | Type-check without emitting |
 | `npm run generate:logo` | Regenerate the terminal logo from `assets/logo.png` |
 | `npm run eval` | Run the evals in `evals/` |
+
+## Evaluation
+
+Evals run with [Laminar](https://www.lmnr.ai) via `npm run eval` (or `bun run eval`). Each suite lives in `evals/evaluators/` with its dataset in `evals/data/`.
+
+| Suite | Cases | Metric | Score |
+| --- | --- | --- | --- |
+| Tool routing | 8 | Correct tool chosen for the request | 0.875 |
+| Multi-turn agent | 9 | Forbidden tools avoided | 1.00 |
+| Multi-turn agent | 9 | Expected tool arguments | 1.00 |
+| Multi-turn agent | 9 | Efficiency | 1.00 |
+| Multi-turn agent | 9 | Output quality (LLM judge) | 0.99 |
+| File tools | 5 | Tool selection / argument correctness | 1.00 / 1.00 |
+| Date/time | 1 | Tool selection | 1.00 |
+| Compaction | 1 | Fact retention after compaction | 1.00 |
+
+Notes:
+
+- Model under test: Gemini (`gemini-3.5-flash-lite`). The LLM judge uses the same model.
+- Results are from a single run on 2026-11-05. LLM output is non-deterministic, so scores can vary between runs.
+- The date/time and compaction suites have one case each, so treat them as smoke tests rather than reliable measurements.
+- The one tool-routing miss is still being investigated.
+- Web search now uses Exa instead of Groq's built-in browser search. Eval cases reference the `webSearch` tool by name, so they apply to either backend.
 
 ## Project structure
 
