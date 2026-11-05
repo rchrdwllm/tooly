@@ -32,4 +32,5 @@ evaluate({
       return argsPassedScorer(output, target);
     }
   },
+  groupName: "file-tools"
 });
