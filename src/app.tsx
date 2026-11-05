@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Box, Static, Text, useApp } from 'ink';
 import Spinner from 'ink-spinner';
+import {useTerminalInfo} from 'ink-picture';
 import { Header } from './components/Header.js';
 import { Message } from './components/Message.js';
 import { ToolCall } from './components/ToolCall.js';
@@ -15,6 +16,8 @@ import 'dotenv/config';
 
 export function App({agent = runAgent}: {agent?: Agent}) {
   const {exit} = useApp();
+  const info = useTerminalInfo();
+  const graphical = info.supportsKittyGraphics || info.supportsITerm2Graphics || info.supportsSixelGraphics;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState<string | null>(null); // null = idle
@@ -112,11 +115,22 @@ export function App({agent = runAgent}: {agent?: Agent}) {
 
   return (
     <Box flexDirection="column">
-      {/* Static renders each finished message once, so history never re-renders. */}
-      <Static items={messages}>{m => <Message key={m.id} message={m} />}</Static>
-
-      {/* Outside Static: graphical image protocols need the live layout to track position. */}
-      <Header />
+      {graphical ? (
+        <>
+          {/* Graphical image protocols need the live layout to track position, so the
+              logo and history both stay live: logo first, then messages. */}
+          <Header />
+          {messages.map(m => (
+            <Message key={m.id} message={m} />
+          ))}
+        </>
+      ) : (
+        /* Static renders each item once, in order, so the header comes first and
+           history never re-renders. */
+        <Static items={[{id: -1, header: true as const}, ...messages.map(m => ({id: m.id, header: false as const, m}))]}>
+          {item => (item.header ? <Header key="header" /> : <Message key={item.id} message={item.m} />)}
+        </Static>
+      )}
 
       {Object.entries(pendingTools).map(([id, tool]) => (
         <ToolCall key={id} tool={tool} />
