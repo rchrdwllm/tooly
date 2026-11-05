@@ -1,5 +1,5 @@
 import { evaluate } from "@lmnr-ai/lmnr";
-import data from "../data/file-tools.json" with { type: "json" };
+import data from "../data/single-turn/file-tools.json" with { type: "json" };
 import { singleTurnExecutor } from "../executor.js";
 import { EvalTarget } from "../types.js";
 import { toolSelectionScorer } from "./scorers/tool-selection.js";
@@ -32,5 +32,5 @@ evaluate({
       return argsPassedScorer(output, target);
     }
   },
-  groupName: "file-tools"
+  groupName: "single-turn/file-tools"
 });

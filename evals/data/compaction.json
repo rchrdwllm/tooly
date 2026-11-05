@@ -1,0 +1,35 @@
+[
+  {
+    "data": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hey, I'm working on the billing service."
+        },
+        { "role": "assistant", "content": "Sure, what do you need?" },
+        {
+          "role": "user",
+          "content": "Always use pnpm, never npm. I hate npm."
+        },
+        { "role": "assistant", "content": "Noted, I'll use pnpm." },
+        {
+          "role": "user",
+          "content": "Open invoice_export.py and fix the date bug."
+        },
+        { "role": "assistant", "content": "Looking at invoice_export.py now." },
+        {
+          "role": "user",
+          "content": "We decided to use PostgreSQL instead of MongoDB."
+        }
+      ],
+      "fillerTurns": 30
+    },
+    "target": {
+      "facts": [
+        { "label": "filename", "keywords": ["invoice_export.py"] },
+        { "label": "preference", "keywords": ["pnpm"] },
+        { "label": "decision", "keywords": ["postgres"] }
+      ]
+    }
+  }
+]

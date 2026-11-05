@@ -1,5 +1,5 @@
 import { evaluate } from "@lmnr-ai/lmnr";
-import data from "../data/date-time-tools.json" with { type: "json" };
+import data from "../data/single-turn/date-time-tools.json" with { type: "json" };
 import { singleTurnExecutor } from "../executor.js";
 import { EvalTarget } from "../types.js";
 import { toolSelectionScorer } from "./scorers/tool-selection.js";
@@ -20,4 +20,5 @@ evaluate({
       return toolSelectionScorer(output, target);
     },
   },
+  groupName: "single-turn/date-time-tools"
 });

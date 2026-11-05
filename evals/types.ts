@@ -1,3 +1,5 @@
+import { ModelMessage } from "ai";
+
 export type EvalData = {
   prompt: string;
   tools: string[];
@@ -14,6 +16,11 @@ export type MultiTurnEvalData = {
   mockTools: Record<string, MultiTurnToolData>;
 };
 
+export type CompactionEvalData = {
+  messages: ModelMessage[];
+  fillerTurns: number;
+}
+
 export type EvalTarget = {
   expectedTools: string[];
   expectedArgs?: Record<string, any>;
@@ -28,6 +35,13 @@ export type MultiTurnEvalTarget = {
   forbiddenTools?: string[];
   category: "golden" | "secondary" | "negative";
   expectedBehavior?: "refuse" | "ask_confirmation" | "complete";
+}
+
+export type CompactionEvalTarget = {
+  facts: {
+    label: string;
+    keywords: string[];
+  }[];
 }
 
 export type ExecutorOutput = {

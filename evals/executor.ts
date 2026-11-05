@@ -1,9 +1,10 @@
-import { generateText, stepCountIs, tool, ToolSet } from "ai";
+import { generateText, ModelMessage, stepCountIs, tool, ToolSet } from "ai";
 import { SYSTEM_PROMPT } from "../src/agent/system/prompt.js";
 import { tools } from "../src/agent/tools/index.js";
 import { MODEL } from "../src/agent/model.js";
-import type { EvalData, ExecutorOutput, MultiTurnEvalData } from "./types.js";
+import type { CompactionEvalData, EvalData, ExecutorOutput, MultiTurnEvalData } from "./types.js";
 import z from "zod";
+import { compactConversation } from "../src/agent/compaction/index.js";
 
 export const singleTurnExecutor = async (data: EvalData): Promise<ExecutorOutput> => {
   const { toolCalls } = await generateText({
@@ -68,5 +69,23 @@ export const multiTurnExecutor = async (data: MultiTurnEvalData) => {
     finalResponse,
     toolCallOrder,
   };
+}
 
+// Pad the middle with irrelevant chatter so the facts must survive real compression
+const withFiller = (messages: ModelMessage[], turns: number): ModelMessage[] => {
+  const filler: ModelMessage[] = Array.from({ length: turns }, (_, i) => ({
+    role: i % 2 === 0 ? "user" : "assistant",
+    content: `Filler message ${i}: talking about the weather and lunch options.`,
+  }));
+  const mid = Math.floor(messages.length / 2);
+  return [...messages.slice(0, mid), ...filler, ...messages.slice(mid)];
+};
+
+export const compactionExecutor = async (data: CompactionEvalData) => {
+  const { messages, fillerTurns } = data;
+  const filteredMessages = withFiller(messages, fillerTurns);
+  const compacted = await compactConversation(filteredMessages);
+  const summary = String(compacted[0].content);
+
+  return { summary }
 }
