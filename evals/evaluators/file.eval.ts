@@ -3,6 +3,7 @@ import data from "../data/file-tools.json" with { type: "json" };
 import { singleTurnExecutor } from "../executor.js";
 import { EvalTarget } from "../types.js";
 import { toolSelectionScorer } from "./scorers/tool-selection.js";
+import { argsPassedScorer } from "./scorers/args-passed.js";
 
 evaluate({
   data: data as any,
@@ -19,5 +20,16 @@ evaluate({
 
       return toolSelectionScorer(output, target);
     },
+    argsPassedScoring: (output, target?: EvalTarget) => {
+      if (!target) {
+        return 0;
+      }
+
+      if (target.category === "secondary") {
+        return 1;
+      }
+
+      return argsPassedScorer(output, target);
+    }
   },
 });

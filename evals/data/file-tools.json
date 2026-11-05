@@ -2,20 +2,28 @@
   {
     "data": {
       "prompt": "List files in this directory.",
-      "tools": ["dateTime", "listFiles"]
+      "tools": ["dateTime", "listFiles", "writeFile", "readFile", "deleteFile"]
     },
     "target": {
       "expectedTools": ["listFiles"],
+      "expectedArgs": {
+        "listFiles": { "path": "." }
+      },
+      "forbiddenTools": ["writeFile", "readFile", "deleteFile"],
       "category": "golden"
     }
   },
   {
     "data": {
       "prompt": "List files in this directory: ./src",
-      "tools": ["dateTime", "listFiles"]
+      "tools": ["dateTime", "listFiles", "writeFile", "readFile", "deleteFile"]
     },
     "target": {
       "expectedTools": ["listFiles"],
+      "expectedArgs": {
+        "listFiles": { "path": "./src" }
+      },
+      "forbiddenTools": ["writeFile", "readFile", "deleteFile"],
       "category": "golden"
     }
   }

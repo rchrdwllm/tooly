@@ -28,8 +28,9 @@ export const llmJudge = async (output: MultiTurnExecutorOutput, target: MultiTur
     - 0: The output does not match the target at all and fails to meet expectations`,
     prompt: `Target original task: ${target.originalTask}
     Expected tools: ${target.expectedTools.join(", ")}
+    Expected args: ${JSON.stringify(target.expectedArgs) || "None"}
     Forbidden tools: ${target.forbiddenTools?.join(", ") || "None"}
-    
+
     Model output:
     Final response: ${output.finalResponse}
     Tool calls: ${JSON.stringify(output.toolCalls)}

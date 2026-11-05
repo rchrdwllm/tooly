@@ -22,6 +22,10 @@
     "target": {
       "originalTask": "List the files in the `/src` directory and read the main entry point",
       "expectedTools": ["listFiles", "readFile"],
+      "expectedArgs": {
+        "listFiles": { "directoryPath": "./src" },
+        "readFile": { "filePath": "./src/index.ts" }
+      },
       "category": "golden"
     }
   }

@@ -4,6 +4,12 @@ export const toolSelectionScorer = (
   output: ExecutorOutput,
   target: EvalTarget,
 ): number => {
+  const forbiddenToolsSet = new Set(target.forbiddenTools || []);
+  
+  if (output.toolNames.some((toolName) => forbiddenToolsSet.has(toolName))) {
+    return 0;
+  }
+
   if (!target.expectedTools.length) {
     return output.selectedAny ? 0.5 : 1;
   }

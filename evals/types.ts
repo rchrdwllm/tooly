@@ -16,12 +16,15 @@ export type MultiTurnEvalData = {
 
 export type EvalTarget = {
   expectedTools: string[];
+  expectedArgs?: Record<string, any>;
+  forbiddenTools?: string[];
   category: "golden" | "secondary" | "negative";
 };
 
 export type MultiTurnEvalTarget = {
   originalTask: string;
   expectedTools: string[];
+  expectedArgs?: Record<string, any>;
   forbiddenTools?: string[];
   category: "golden" | "secondary" | "negative";
 }
