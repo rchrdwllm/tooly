@@ -1,6 +1,6 @@
 # Tooly
 
-![Tooly logo](assets/logo.png)
+![Tooly logo](assets/logo-black.png)
 
 A terminal chat agent built with [Ink](https://github.com/vadimdemedes/ink) and the [Vercel AI SDK](https://ai-sdk.dev). Tooly talks to Google Gemini (`gemini-3.5-flash-lite`) and can call tools to work with your files, run shell commands, and search the web (via [Exa](https://exa.ai)).
 
